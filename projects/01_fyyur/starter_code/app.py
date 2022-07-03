@@ -13,7 +13,7 @@ from logging import Formatter, FileHandler
 from flask_wtf import Form
 from forms import *
 from flask_migrate import Migrate
-
+import sys
 #----------------------------------------------------------------------------#
 # App Config.
 #----------------------------------------------------------------------------#
@@ -119,29 +119,49 @@ def index():
 def venues():
   # TODO: replace with real venues data.
   #       num_upcoming_shows should be aggregated based on number of upcoming shows per venue.
-  areas = db.session.query(Venue.city, Venue.state).distinct(Venue.city, Venue.state).all()
-  print(areas)
-  data=[{
-    "city": "San Francisco",
-    "state": "CA",
-    "venues": [{
-      "id": 1,
-      "name": "The Musical Hop",
-      "num_upcoming_shows": 0,
-    }, {
-      "id": 3,
-      "name": "Park Square Live Music & Coffee",
-      "num_upcoming_shows": 1,
-    }]
-  }, {
-    "city": "New York",
-    "state": "NY",
-    "venues": [{
-      "id": 2,
-      "name": "The Dueling Pianos Bar",
-      "num_upcoming_shows": 0,
-    }]
-  }]
+  data = []
+  areas = db.session.query(Venue.city, Venue.state).distinct(Venue.city, Venue.state)
+  for area in areas:
+    venues = Venue.query.filter(Venue.city == area.city, Venue.state == area.state).all()
+    # print(venues, file=sys.stdout)
+    venue_data = []
+    for ven in venues:
+      venue_data.append({
+        "id": ven.id,
+        "name": ven.name
+      })
+    data.append({
+      "city":area.city,
+      "state":area.state,
+      "venues":venue_data
+    })
+    # print(venue_data, file=sys.stdout)
+
+
+
+
+  # print('This is standard output', file=sys.stdout)
+  # data=[{
+  #   "city": "San Francisco",
+  #   "state": "CA",
+  #   "venues": [{
+  #     "id": 1,
+  #     "name": "The Musical Hop",
+  #     "num_upcoming_shows": 0,
+  #   }, {
+  #     "id": 3,
+  #     "name": "Park Square Live Music & Coffee",
+  #     "num_upcoming_shows": 1,
+  #   }]
+  # }, {
+  #   "city": "New York",
+  #   "state": "NY",
+  #   "venues": [{
+  #     "id": 2,
+  #     "name": "The Dueling Pianos Bar",
+  #     "num_upcoming_shows": 0,
+  #   }]
+  # }]
   return render_template('pages/venues.html', areas=data);
 
 @app.route('/venues/search', methods=['POST'])
@@ -163,19 +183,7 @@ def search_venues():
 def show_venue(venue_id):
   # shows the venue page with the given venue_id
   # TODO: replace with real venue data from the venues table, using venue_id
-  park= Venue(
-    id=3,
-    name='Park Square Live Music & Coffee',
-    genres='Folk',
-    address='34 Whiskey Moore Ave',
-    city="San Francisco",
-    state="CA",
-    phone="415-000-1234",
-    website="https://www.parksquarelivemusicandcoffee.com",
-    facebook_link="https://www.facebook.com/ParkSquareLiveMusicAndCoffee",
-    seeking_talent=False,
-    image_link="https://images.unsplash.com/photo-1485686531765-ba63b07845a7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80"
-  )
+ 
   data1={
     "id": 1,
     "name": "The Musical Hop",
