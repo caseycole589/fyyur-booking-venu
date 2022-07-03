@@ -123,7 +123,7 @@ def venues():
   areas = db.session.query(Venue.city, Venue.state).distinct(Venue.city, Venue.state)
   for area in areas:
     venues = Venue.query.filter(Venue.city == area.city, Venue.state == area.state).all()
-    # print(venues, file=sys.stdout)
+    print(venues, file=sys.stdout)
     venue_data = []
     for ven in venues:
       venue_data.append({
@@ -135,33 +135,7 @@ def venues():
       "state":area.state,
       "venues":venue_data
     })
-    # print(venue_data, file=sys.stdout)
 
-
-
-
-  # print('This is standard output', file=sys.stdout)
-  # data=[{
-  #   "city": "San Francisco",
-  #   "state": "CA",
-  #   "venues": [{
-  #     "id": 1,
-  #     "name": "The Musical Hop",
-  #     "num_upcoming_shows": 0,
-  #   }, {
-  #     "id": 3,
-  #     "name": "Park Square Live Music & Coffee",
-  #     "num_upcoming_shows": 1,
-  #   }]
-  # }, {
-  #   "city": "New York",
-  #   "state": "NY",
-  #   "venues": [{
-  #     "id": 2,
-  #     "name": "The Dueling Pianos Bar",
-  #     "num_upcoming_shows": 0,
-  #   }]
-  # }]
   return render_template('pages/venues.html', areas=data);
 
 @app.route('/venues/search', methods=['POST'])
@@ -320,16 +294,7 @@ def search_artists():
 def show_artist(artist_id):
   # shows the artist page with the given artist_id
   # TODO: replace with real artist data from the artist table, using artist_id
-    # wild = Artist(
-    #     id=6, 
-    #     name='The Wild Sax Band', 
-    #     genres='Jazz, Classical', 
-    #     city='San Francisco',
-    #     state='CA', 
-    #     phone='432-325-5432', 
-    #     seeking_venue=False, 
-    #     image_link='https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80'
-    # )
+
   data1={
     "id": 4,
     "name": "Guns N Petals",
