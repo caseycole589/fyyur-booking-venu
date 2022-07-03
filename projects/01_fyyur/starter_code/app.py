@@ -31,7 +31,7 @@ db = SQLAlchemy(app)
 # DONE: TODO: connect to a local postgresql database
 migrate = Migrate(app, db)
 
-#----------------------------------------------------------------------------#
+#----------------------------------------------------------------------------#A
 # Models.
 #----------------------------------------------------------------------------#
 class Venue(db.Model):
@@ -45,11 +45,14 @@ class Venue(db.Model):
     phone = db.Column(db.String(120))
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
+    website = db.Column(db.String(120))
     seeking_talent = db.Column(db.Boolean, default=False)
     seeking_description= db.Column(db.String(120))
     genres = db.Column(db.String(120))
-    shows = db.relationship("Show", backref="shows", lazy=True)
+    shows = db.relationship("Show", backref="venu_shows", lazy=True)
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
+    def __repr__(self):
+      return f'<Venue id: {self.id}, name: {self.name}, city: {self.city}, state: {self.state}>'
 
 
 class Artist(db.Model):
@@ -63,10 +66,14 @@ class Artist(db.Model):
     genres = db.Column(db.String(120))
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
-    seeking_talent = db.Column(db.Boolean)
+    website = db.Column(db.String(120))
+    seeking_venue = db.Column(db.Boolean)
     seeking_description= db.Column(db.String(120))
-    shows = db.relationship("Show", backref="shows", lazy=True)
+    shows = db.relationship("Show", backref="artist_shows", lazy=True)
     # TODO: implement any missing fields, as a database migration using Flask-Migrate
+
+    def __repr__(self):
+      return f'<ARTIST id: {self.id}, name: {self.name}, city: {self.city}, state: {self.state}>'
 
 # TODO Implement Show and Artist models, and complete all model relationships and properties, as a database migration.
 class Show(db.Model):
@@ -75,7 +82,12 @@ class Show(db.Model):
     artist_id = db.Column(db.Integer, db.ForeignKey('Artist.id'), nullable=False)
     venue_id = db.Column(db.Integer, db.ForeignKey('Venue.id'), nullable=False)
     start_time = db.Column(db.DateTime, nullable=False)
-
+    # "artist_id": 4,
+    # "artist_name": "Guns N Petals",
+    # "artist_image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80",
+    # "venue_name": "The Musical Hop",
+    # "venue_image_link": "https://images.unsplash.com/photo-1543900694-133f37abaaa5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60",
+    # "start_time": "2019-05-21T21:30:00.000Z"
 db.create_all()
 #----------------------------------------------------------------------------#
 # Filters.
@@ -107,6 +119,8 @@ def index():
 def venues():
   # TODO: replace with real venues data.
   #       num_upcoming_shows should be aggregated based on number of upcoming shows per venue.
+  areas = db.session.query(Venue.city, Venue.state).distinct(Venue.city, Venue.state).all()
+  print(areas)
   data=[{
     "city": "San Francisco",
     "state": "CA",
@@ -149,6 +163,19 @@ def search_venues():
 def show_venue(venue_id):
   # shows the venue page with the given venue_id
   # TODO: replace with real venue data from the venues table, using venue_id
+  park= Venue(
+    id=3,
+    name='Park Square Live Music & Coffee',
+    genres='Folk',
+    address='34 Whiskey Moore Ave',
+    city="San Francisco",
+    state="CA",
+    phone="415-000-1234",
+    website="https://www.parksquarelivemusicandcoffee.com",
+    facebook_link="https://www.facebook.com/ParkSquareLiveMusicAndCoffee",
+    seeking_talent=False,
+    image_link="https://images.unsplash.com/photo-1485686531765-ba63b07845a7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=747&q=80"
+  )
   data1={
     "id": 1,
     "name": "The Musical Hop",
@@ -262,17 +289,8 @@ def delete_venue(venue_id):
 #  ----------------------------------------------------------------
 @app.route('/artists')
 def artists():
-  # TODO: replace with real data returned from querying the database
-  data=[{
-    "id": 4,
-    "name": "Guns N Petals",
-  }, {
-    "id": 5,
-    "name": "Matt Quevedo",
-  }, {
-    "id": 6,
-    "name": "The Wild Sax Band",
-  }]
+  #DONE: TODO: replace with real data returned from querying the database
+  data = Artist.query.all()
   return render_template('pages/artists.html', artists=data)
 
 @app.route('/artists/search', methods=['POST'])
@@ -294,6 +312,16 @@ def search_artists():
 def show_artist(artist_id):
   # shows the artist page with the given artist_id
   # TODO: replace with real artist data from the artist table, using artist_id
+    # wild = Artist(
+    #     id=6, 
+    #     name='The Wild Sax Band', 
+    #     genres='Jazz, Classical', 
+    #     city='San Francisco',
+    #     state='CA', 
+    #     phone='432-325-5432', 
+    #     seeking_venue=False, 
+    #     image_link='https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80'
+    # )
   data1={
     "id": 4,
     "name": "Guns N Petals",
