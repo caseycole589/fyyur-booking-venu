@@ -1,2 +1,30 @@
 
 2022-07-03 11:44:04,699 INFO: errors [in C:\Users\ccole.CAPS\Desktop\FSND\projects\01_fyyur\starter_code\app.py:524]
+2022-07-03 14:23:31,560 INFO: errors [in C:\Users\ccole.CAPS\Desktop\FSND\projects\01_fyyur\starter_code\app.py:554]
+2022-07-03 14:38:44,509 INFO: errors [in C:\Users\ccole.CAPS\Desktop\FSND\projects\01_fyyur\starter_code\app.py:555]
+2022-07-03 14:38:49,476 ERROR: Exception on /venues [GET] [in C:\Users\ccole.CAPS\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\flask\app.py:1456]
+Traceback (most recent call last):
+  File "C:\Users\ccole.CAPS\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\flask\app.py", line 2077, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\ccole.CAPS\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\flask\app.py", line 1525, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\ccole.CAPS\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\flask\app.py", line 1523, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\ccole.CAPS\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\flask\app.py", line 1509, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "C:\Users\ccole.CAPS\Desktop\FSND\projects\01_fyyur\starter_code\app.py", line 146, in venues
+    return render_template('pages/venues.html', areas=data);
+NameError: name 'data' is not defined
+2022-07-03 14:39:24,423 ERROR: Exception on /venues [GET] [in C:\Users\ccole.CAPS\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\flask\app.py:1456]
+Traceback (most recent call last):
+  File "C:\Users\ccole.CAPS\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\flask\app.py", line 2077, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Users\ccole.CAPS\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\flask\app.py", line 1525, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Users\ccole.CAPS\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\flask\app.py", line 1523, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Users\ccole.CAPS\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.7_qbz5n2kfra8p0\LocalCache\local-packages\Python37\site-packages\flask\app.py", line 1509, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+  File "C:\Users\ccole.CAPS\Desktop\FSND\projects\01_fyyur\starter_code\app.py", line 146, in venues
+    return render_template('pages/venues.html', areas=data);
+NameError: name 'data' is not defined
