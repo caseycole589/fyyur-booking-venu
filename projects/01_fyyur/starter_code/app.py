@@ -548,7 +548,7 @@ def create_show_submission():
       start_time = request.form.get('start_time'),
     )
     print(new_show)
-    db.session.add(new_artist)
+    db.session.add(new_show)
     db.session.commit()
     # TODO: modify data to be the data object returned from db insertion
     flash('Show at ' + request.form['start_time'] + ' was successfully listed!')
