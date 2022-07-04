@@ -134,16 +134,19 @@ def venues():
 
 @app.route('/venues/search', methods=['POST'])
 def search_venues():
-  # TODO: implement search on venues with partial string search. Ensure it is case-insensitive.
   # seach for Hop should return "The Musical Hop".
   # search for "Music" should return "The Musical Hop" and "Park Square Live Music & Coffee"
+  venues = Venue.query.filter(Venue.name.like(f'%{request.form.get("search_term")}%')).all()
+  data = []
+  for venue in venues:
+    data.append({
+      "id": venue.id,
+      "name": venue.name
+    })
+
   response={
-    "count": 1,
-    "data": [{
-      "id": 2,
-      "name": "The Dueling Pianos Bar",
-      "num_upcoming_shows": 0,
-    }]
+    "count": len(venues),
+    "data": data
   }
   return render_template('pages/search_venues.html', results=response, search_term=request.form.get('search_term', ''))
 
@@ -223,8 +226,6 @@ def create_venue_submission():
     flash('Venue ' + request.form['name'] + ' was successfully listed!')
   except Exception as e:
     print(e)
-    # TODO done: on unsuccessful db insert, flash an error instead.
-    # e.g., flash('An error occurred. Venue ' + data.name + ' could not be listed.')
     flash('An error occurred. Venue ' + request.form['name'] + ' could not be added')
     db.session.rollback()
   finally: 
@@ -244,29 +245,30 @@ def delete_venue(venue_id):
 #  ----------------------------------------------------------------
 @app.route('/artists')
 def artists():
-  #DONE: TODO: replace with real data returned from querying the database
   data = Artist.query.all()
   return render_template('pages/artists.html', artists=data)
 
 @app.route('/artists/search', methods=['POST'])
 def search_artists():
-  # TODO: implement search on artists with partial string search. Ensure it is case-insensitive.
   # seach for "A" should return "Guns N Petals", "Matt Quevado", and "The Wild Sax Band".
   # search for "band" should return "The Wild Sax Band".
+  artists = Artist.query.filter(Artist.name.ilike(f'%{request.form.get("search_term")}%')).all()
+  data = []
+  for artist in artists:
+    data.append({
+        "id": artist.id,
+        "name": artist.name
+      })
+
   response={
-    "count": 1,
-    "data": [{
-      "id": 4,
-      "name": "Guns N Petals",
-      "num_upcoming_shows": 0,
-    }]
+    "count": len(artists),
+    "data": data
   }
   return render_template('pages/search_artists.html', results=response, search_term=request.form.get('search_term', ''))
 
 @app.route('/artists/<int:artist_id>')
 def show_artist(artist_id):
   # shows the artist page with the given artist_id
-  # TODO: replace with real artist data from the artist table, using artist_id
   current_date = datetime.datetime.now()
   upcoming_shows = []
   past_shows = []
@@ -375,7 +377,6 @@ def create_artist_form():
 @app.route('/artists/create', methods=['POST'])
 def create_artist_submission():
   # called upon submitting the new artist listing form
-  #DONE: TODO: insert form data as a new Venue record in the db, instead
   try:
     new_artist = Artist(
       name = request.form.get('name'),
@@ -429,7 +430,6 @@ def create_shows():
 @app.route('/shows/create', methods=['POST'])
 def create_show_submission():
   # called to create new shows in the db, upon submitting new show listing form
-  # TODO: insert form data as a new Show record in the db, instead
   try:
     new_show = Show(
       artist_id = request.form.get('artist_id'),
@@ -438,11 +438,9 @@ def create_show_submission():
     )
     db.session.add(new_show)
     db.session.commit()
-    # TODO: modify data to be the data object returned from db insertion
     flash('Show at ' + request.form['start_time'] + ' was successfully listed!')
   except Exception as e:
     print(e)
-    #DONE: TODO: on unsuccessful db insert, flash an error instead.
     flash('An error occurred. Show at ' + request.form['start_time'] + ' could not be added')
     db.session.rollback()
   finally: 
