@@ -1,7 +1,6 @@
 #----------------------------------------------------------------------------#
 # Imports
 #----------------------------------------------------------------------------#
-
 import json
 import dateutil.parser
 import babel
@@ -153,7 +152,6 @@ def search_venues():
 @app.route('/venues/<int:venue_id>')
 def show_venue(venue_id):
   # shows the venue page with the given venue_id
-  # TODO: replace with real venue data from the venues table, using venue_id
   current_date = datetime.datetime.now()
   upcoming_shows = []
   past_shows = []
@@ -234,12 +232,16 @@ def create_venue_submission():
 
 @app.route('/venues/<venue_id>', methods=['DELETE'])
 def delete_venue(venue_id):
-  # TODO: Complete this endpoint for taking a venue_id, and using
-  # SQLAlchemy ORM to delete a record. Handle cases where the session commit could fail.
-
-  # BONUS CHALLENGE: Implement a button to delete a Venue on a Venue Page, have it so that
-  # clicking that button delete it from the db then redirect the user to the homepage
-  return None
+  try:
+    # Delete the venue by it's id & update the db
+    venue = Venue.query.get(venue_id)
+    db.session.delete(venue)
+    db.session.commit()
+  except:
+    db.session.rollback()
+  finally:
+    db.session.close()
+  return None 
 
 #  Artists
 #  ----------------------------------------------------------------
@@ -403,11 +405,41 @@ def create_artist_submission():
 
 #  Shows
 #  ----------------------------------------------------------------
+@app.route('/show')
+def show():
+  return render_template("pages/show.html")
+
+@app.route('/shows/search', methods=['POST'])
+def search_shows():
+  search_term = request.form.get("search_term")
+  fuzzy_venue = db.session.query(Show).join(Venue, Show.venue_id == Venue.id).filter(Venue.name.ilike(f'%{search_term}%')).all()
+  fuzzy_artist= db.session.query(Show).join(Artist, Show.artist_id == Artist.id).filter(Artist.name.ilike(f'%{search_term}%')).all()
+  all_matches = []
+  for show in fuzzy_venue:
+    if show not in all_matches:
+      all_matches.append(show)
+  for show in fuzzy_artist:
+    if show not in all_matches:
+      all_matches.append(show)
+  data = []
+  for show in all_matches:
+    data.append({
+      "venue_id": show.venue_id, 
+      "venue_name": show.Venue.name,
+      "artist_id": show.artist_id,
+      "artist_name": show.Artist.name,
+      "start_time": show.start_time,
+      "artist_image_link": show.Artist.image_link
+    })
+  response={
+    "count": len(data),
+    "data": data
+  }
+  return render_template('pages/show.html', results=response, search_term=request.form.get('search_term', ''))
 
 @app.route('/shows')
 def shows():
   # displays list of shows at /shows
-
   data = db.session.query(Show).join(Venue, Show.venue_id == Venue.id).join(Artist, Show.artist_id == Artist.id).all()
   resp = []
   for show in data:
